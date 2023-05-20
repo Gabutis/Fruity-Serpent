@@ -10,6 +10,7 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
     return image
 
 pygame.init()
+
 screen = pygame.display.set_mode((800, 600))
 
 background = pygame.image.load("background.jpg")
