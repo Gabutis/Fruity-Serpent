@@ -12,7 +12,7 @@ background = pygame.image.load("background.jpg")
 background = pygame.transform.scale(background, (settings.WIDTH, settings.HEIGHT))
 
 snake = klases.Snake()
-food = klases.Food()
+food = klases.Food(snake)
 
 clock = pygame.time.Clock()
 
@@ -39,7 +39,7 @@ while True:
 
     if snake.body[0] == food.position:
         snake.grow()
-        food.position = food.generate_position()
+        food.position = food.generate_position(snake)
 
     screen.blit(background, (0, 0))
     snake.draw(screen)
