@@ -10,8 +10,10 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
     return image
 
 pygame.init()
-
 screen = pygame.display.set_mode((800, 600))
+
+background = pygame.image.load("background.jpg")
+background = pygame.transform.scale(background, (settings.WIDTH, settings.HEIGHT))
 
 snake_sprite = pygame.image.load("snake_sprite.png").convert_alpha()
 
