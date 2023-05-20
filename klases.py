@@ -16,6 +16,7 @@ class Snake:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(6, 10)]
         self.direction = Vector2(1, 0)
+        self.score = 0
 
     def move(self, food_position, auto_move=False):
         head = self.body[0]
@@ -158,3 +159,18 @@ class Food:
 
     def draw(self, screen):
         screen.blit(graphics.frame_food, pygame.Rect((self.position[0] * settings.GRID_SIZE), (self.position[1] * settings.GRID_SIZE), settings.GRID_SIZE, settings.GRID_SIZE))
+
+
+class Leaderboard:
+    def __init__(self):
+        self.scores = []
+
+    def add_score(self, player_name, score):
+        self.scores.append((player_name, score))
+        self.scores.sort(key=lambda x: x[1], reverse=True)  # Sort the scores in descending order
+
+    def get_leaderboard_text(self):
+        leaderboard_text = "LEADERBOARD\n\n"
+        for index, (player_name, score) in enumerate(self.scores, start=1):
+            leaderboard_text += f"{index}. {player_name}: {score}\n"
+        return leaderboard_text
