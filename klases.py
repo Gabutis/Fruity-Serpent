@@ -5,29 +5,21 @@ import graphics
 from pygame.math import Vector2
 
 
-from random import randint
-import pygame
-import settings
-import graphics
-from pygame.math import Vector2
-
-
 class Snake:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(6, 10)]
         self.direction = Vector2(1, 0)
         self.score = 0
+        self.player_name = ""
 
     def move(self, food_position, auto_move=False):
         head = self.body[0]
 
         if auto_move:
             next_direction = self.move_towards_food(Vector2(food_position))
-            # Check if moving in the next direction would result in a collision with the body
             if self.is_valid_direction(next_direction):
                 self.direction = next_direction
             else:
-                # Find the next valid direction to move
                 next_direction = self.find_next_valid_direction()
                 self.direction = next_direction
 
@@ -50,8 +42,6 @@ class Snake:
         for direction in directions:
             if self.is_valid_direction(direction):
                 return direction
-
-        # If no valid direction is found, continue in the current direction
         return self.direction
 
     def move_towards_food(self, food_position):
@@ -145,32 +135,10 @@ class Food:
         screen.blit(graphics.frame_food, pygame.Rect((self.position[0] * settings.GRID_SIZE), (self.position[1] * settings.GRID_SIZE), settings.GRID_SIZE, settings.GRID_SIZE))
 
 
-
-
-class Food:
-    def __init__(self, snake_position):
-        self.position = self.generate_position(snake_position)
-
-    def generate_position(self, snake_position):
-        while True:
-            new_position = (randint(1, settings.GRID_WIDTH - 2), randint(2, settings.GRID_HEIGHT - 2))
-            if new_position not in snake_position.body:
-                return new_position
-
-    def draw(self, screen):
-        screen.blit(graphics.frame_food, pygame.Rect((self.position[0] * settings.GRID_SIZE), (self.position[1] * settings.GRID_SIZE), settings.GRID_SIZE, settings.GRID_SIZE))
-
-
 class Leaderboard:
     def __init__(self):
-        self.scores = []
+        self.scores = [{"player_name": "gabis", "score": 5}]
 
     def add_score(self, player_name, score):
-        self.scores.append((player_name, score))
-        self.scores.sort(key=lambda x: x[1], reverse=True)  # Sort the scores in descending order
-
-    def get_leaderboard_text(self):
-        leaderboard_text = "LEADERBOARD\n\n"
-        for index, (player_name, score) in enumerate(self.scores, start=1):
-            leaderboard_text += f"{index}. {player_name}: {score}\n"
-        return leaderboard_text
+        entry = {'player_name': player_name, 'score': score}
+        self.scores.append(entry)
