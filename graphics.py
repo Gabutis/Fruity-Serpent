@@ -93,7 +93,7 @@ def game_state_menu(auto_move):
     return title_text, start_button, leaderboard_button, exit_button, checkbox, checkbox_rect
 
 
-def game_state_name_input(player_name, is_name_required):
+def game_state_name_input(player_name):
     input_font = pygame.font.Font(None, 36)
 
     input_text_border = input_font.render("Enter your name and press SPACE or click to start:", True, settings.GREEN)
@@ -110,12 +110,11 @@ def game_state_name_input(player_name, is_name_required):
     screen.blit(input_text_border, (input_text_position[0], input_text_position[1] + 2))
     screen.blit(input_text, input_text_position)
 
-    if is_name_required:
-        screen.blit(player_name_text_border, (player_name_text_position[0] - 2, player_name_text_position[1]))
-        screen.blit(player_name_text_border, (player_name_text_position[0] + 2, player_name_text_position[1]))
-        screen.blit(player_name_text_border, (player_name_text_position[0], player_name_text_position[1] - 2))
-        screen.blit(player_name_text_border, (player_name_text_position[0], player_name_text_position[1] + 2))
-        screen.blit(player_name_text, player_name_text_position)
+    screen.blit(player_name_text_border, (player_name_text_position[0] - 2, player_name_text_position[1]))
+    screen.blit(player_name_text_border, (player_name_text_position[0] + 2, player_name_text_position[1]))
+    screen.blit(player_name_text_border, (player_name_text_position[0], player_name_text_position[1] - 2))
+    screen.blit(player_name_text_border, (player_name_text_position[0], player_name_text_position[1] + 2))
+    screen.blit(player_name_text, player_name_text_position)
 
     return input_text, input_text_position
 
@@ -147,13 +146,14 @@ def game_state_game(player_name, score, auto_move):
 
 
 def game_state_leaderboard(leaderboard):
-    title_font = pygame.font.Font(None, 36)
-    entry_font = pygame.font.Font(None, 24)
+    title_font = pygame.font.Font(None, 50)
+    entry_font = pygame.font.Font(None, 36)
+    back_text_font = pygame.font.Font(None, 36)
 
     title_text_border = title_font.render("LEADERBOARD", True, settings.GREEN)
     title_text = title_font.render("LEADERBOARD", True, settings.PURPLE)
-    back_text_border = title_font.render("Press L or click to go back", True, settings.GREEN)
-    back_text = title_font.render("Press L or click to go back", True, settings.PURPLE)
+    back_text_border = back_text_font.render("Press L or click to go back", True, settings.GREEN)
+    back_text = back_text_font.render("Press L or click to go back", True, settings.PURPLE)
     title_text_position = (settings.WIDTH // 2 - title_text.get_width() // 2, 50)
     back_text_position = (settings.WIDTH // 2 - back_text.get_width() // 2, settings.HEIGHT - 50)
 
