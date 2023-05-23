@@ -1,9 +1,9 @@
 from random import randint
+from pygame.math import Vector2
 import pygame
+import pickle
 import settings
 import graphics
-from pygame.math import Vector2
-import pickle
 
 
 class Snake:
@@ -30,9 +30,13 @@ class Snake:
 
     def is_valid_direction(self, direction):
         new_head = self.body[0] + direction
-        if new_head in self.body[1:] or \
-                new_head.x < 1 or new_head.x >= settings.GRID_WIDTH - 1 or \
-                new_head.y < 2 or new_head.y >= settings.GRID_HEIGHT - 1:
+        if (
+            new_head in self.body[1:]
+            or new_head.x < 1
+            or new_head.x >= settings.GRID_WIDTH - 1
+            or new_head.y < 2
+            or new_head.y >= settings.GRID_HEIGHT - 1
+        ):
             return False
 
         return True
@@ -70,7 +74,7 @@ class Snake:
                 segment[0] * settings.GRID_SIZE,
                 segment[1] * settings.GRID_SIZE,
                 settings.GRID_SIZE,
-                settings.GRID_SIZE
+                settings.GRID_SIZE,
             )
 
             if index == 0:
@@ -85,35 +89,63 @@ class Snake:
                 elif previous_block.y == next_block.y:
                     screen.blit(graphics.frame_bh, block_rect)
                 else:
-                    if previous_block.x == -1 and next_block.y == -1 or previous_block.y == -1 and next_block.x == -1:
+                    if (
+                        previous_block.x == -1
+                        and next_block.y == -1
+                        or previous_block.y == -1
+                        and next_block.x == -1
+                    ):
                         screen.blit(graphics.frame_bbl, block_rect)
-                    elif previous_block.x == -1 and next_block.y == 1 or previous_block.y == 1 and next_block.x == -1:
+                    elif (
+                        previous_block.x == -1
+                        and next_block.y == 1
+                        or previous_block.y == 1
+                        and next_block.x == -1
+                    ):
                         screen.blit(graphics.frame_btl, block_rect)
-                    elif previous_block.x == 1 and next_block.y == -1 or previous_block.y == -1 and next_block.x == 1:
+                    elif (
+                        previous_block.x == 1
+                        and next_block.y == -1
+                        or previous_block.y == -1
+                        and next_block.x == 1
+                    ):
                         screen.blit(graphics.frame_bbr, block_rect)
-                    elif previous_block.x == 1 and next_block.y == 1 or previous_block.y == 1 and next_block.x == 1:
+                    elif (
+                        previous_block.x == 1
+                        and next_block.y == 1
+                        or previous_block.y == 1
+                        and next_block.x == 1
+                    ):
                         screen.blit(graphics.frame_btr, block_rect)
 
     def update_head_graphics(self):
         head_relation = self.body[1] - self.body[0]
-        if head_relation == Vector2(1, 0): self.head = graphics.frame_hl
-        elif head_relation == Vector2(-1, 0): self.head = graphics.frame_hr
-        elif head_relation == Vector2(0, 1): self.head = graphics.frame_ht
-        elif head_relation == Vector2(0, -1): self.head = graphics.frame_hb
+        if head_relation == Vector2(1, 0):
+            self.head = graphics.frame_hl
+        elif head_relation == Vector2(-1, 0):
+            self.head = graphics.frame_hr
+        elif head_relation == Vector2(0, 1):
+            self.head = graphics.frame_ht
+        elif head_relation == Vector2(0, -1):
+            self.head = graphics.frame_hb
 
     def update_tail_graphics(self):
         tail_relation = self.body[-2] - self.body[-1]
-        if tail_relation == Vector2(1, 0): self.tail = graphics.frame_tl
-        elif tail_relation == Vector2(-1, 0): self.tail = graphics.frame_tr
-        elif tail_relation == Vector2(0, 1): self.tail = graphics.frame_tt
-        elif tail_relation == Vector2(0, -1): self.tail = graphics.frame_tb
+        if tail_relation == Vector2(1, 0):
+            self.tail = graphics.frame_tl
+        elif tail_relation == Vector2(-1, 0):
+            self.tail = graphics.frame_tr
+        elif tail_relation == Vector2(0, 1):
+            self.tail = graphics.frame_tt
+        elif tail_relation == Vector2(0, -1):
+            self.tail = graphics.frame_tb
 
     def check_collision(self):
         if (
-            self.body[0][0] < 1 or
-            self.body[0][0] >= settings.GRID_WIDTH - 1 or
-            self.body[0][1] < 2 or
-            self.body[0][1] >= settings.GRID_HEIGHT - 1
+            self.body[0][0] < 1
+            or self.body[0][0] >= settings.GRID_WIDTH - 1
+            or self.body[0][1] < 2
+            or self.body[0][1] >= settings.GRID_HEIGHT - 1
         ):
             return True
         for segment in self.body[1:]:
@@ -128,12 +160,23 @@ class Food:
 
     def generate_position(self, snake_position):
         while True:
-            new_position = (randint(1, settings.GRID_WIDTH - 2), randint(2, settings.GRID_HEIGHT - 2))
+            new_position = (
+                randint(1, settings.GRID_WIDTH - 2),
+                randint(2, settings.GRID_HEIGHT - 2),
+            )
             if new_position not in snake_position.body:
                 return new_position
 
     def draw(self, screen):
-        screen.blit(graphics.frame_food, pygame.Rect((self.position[0] * settings.GRID_SIZE), (self.position[1] * settings.GRID_SIZE), settings.GRID_SIZE, settings.GRID_SIZE))
+        screen.blit(
+            graphics.frame_food,
+            pygame.Rect(
+                (self.position[0] * settings.GRID_SIZE),
+                (self.position[1] * settings.GRID_SIZE),
+                settings.GRID_SIZE,
+                settings.GRID_SIZE,
+            ),
+        )
 
 
 class Leaderboard:
@@ -143,14 +186,16 @@ class Leaderboard:
     def add_score(self, player_name, score):
         if player_name.strip() != "" and score > 0:
             for entry in self.scores:
-                if entry['player_name'] == player_name:
-                    if score > entry['score']:
-                        entry['score'] = score
+                if entry["player_name"] == player_name:
+                    if score > entry["score"]:
+                        entry["score"] = score
                     return
 
-            entry = {'player_name': player_name, 'score': score}
+            entry = {"player_name": player_name, "score": score}
             self.scores.append(entry)
-            self.scores = sorted(self.scores, key=lambda x: x['score'], reverse=True)[:15]
+            self.scores = sorted(self.scores, key=lambda x: x["score"], reverse=True)[
+                :15
+            ]
 
 
 def is_button_clicked(rect, pos):
@@ -169,4 +214,3 @@ def load_leaderboard():
     except FileNotFoundError:
         leaderboard = Leaderboard()
     return leaderboard
-

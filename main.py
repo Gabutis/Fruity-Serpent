@@ -4,6 +4,9 @@ import settings
 import klases
 import graphics
 
+# import pickle!!!
+# import black to clean the code
+# duomenu baze sql alchemy
 
 pygame.init()
 pygame.mixer.init()
@@ -13,8 +16,8 @@ clock = pygame.time.Clock()
 screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
 pygame.display.set_caption("Baigiamasis Gyvatukas")
 
-sound_bite = pygame.mixer.Sound("Bite.mp3")
-sound_background = pygame.mixer.music.load("background_sound.mp3")
+sound_bite = pygame.mixer.Sound("sounds/Bite.mp3")
+pygame.mixer.music.load("sounds/background_sound.mp3")
 pygame.mixer.music.play()
 
 snake = klases.Snake()
@@ -27,6 +30,12 @@ game_state = settings.MENU
 
 auto_move = False
 
+start_button = None
+leaderboard_button = None
+exit_button = None
+checkbox = None
+back_text = None
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -36,14 +45,33 @@ while True:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pygame.quit()
             sys.exit()
-
         if game_state == settings.MENU:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
-                start_button_rect = start_button.get_rect(topleft=(settings.WIDTH // 2 - start_button.get_width() // 2, settings.HEIGHT // 2 - 50))
-                leaderboard_button_rect = leaderboard_button.get_rect(topleft=(settings.WIDTH // 2 - leaderboard_button.get_width() // 2, settings.HEIGHT // 2))
-                exit_button_rect = exit_button.get_rect(topleft=(settings.WIDTH // 2 - exit_button.get_width() // 2, settings.HEIGHT - 50))
-                checkbox_rect = checkbox.get_rect(topright=(settings.WIDTH - settings.GRID_SIZE - 10, settings.GRID_SIZE + 10))
+                start_button_rect = start_button.get_rect(
+                    topleft=(
+                        settings.WIDTH // 2 - start_button.get_width() // 2,
+                        settings.HEIGHT // 2 - 50,
+                    )
+                )
+                leaderboard_button_rect = leaderboard_button.get_rect(
+                    topleft=(
+                        settings.WIDTH // 2 - leaderboard_button.get_width() // 2,
+                        settings.HEIGHT // 2,
+                    )
+                )
+                exit_button_rect = exit_button.get_rect(
+                    topleft=(
+                        settings.WIDTH // 2 - exit_button.get_width() // 2,
+                        settings.HEIGHT - 50,
+                    )
+                )
+                checkbox_rect = checkbox.get_rect(
+                    topright=(
+                        settings.WIDTH - settings.GRID_SIZE - 10,
+                        settings.GRID_SIZE + 10,
+                    )
+                )
                 if klases.is_button_clicked(start_button_rect, pos):
                     if not auto_move:
                         game_state = settings.NAME_INPUT
@@ -82,7 +110,12 @@ while True:
                 game_state = settings.MENU
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
-                back_text_rect = back_text.get_rect(topleft=(settings.WIDTH // 2 - back_text.get_width() // 2, settings.HEIGHT - 50))
+                back_text_rect = back_text.get_rect(
+                    topleft=(
+                        settings.WIDTH // 2 - back_text.get_width() // 2,
+                        settings.HEIGHT - 50,
+                    )
+                )
                 if back_text_rect.collidepoint(pos):
                     game_state = settings.MENU
 
@@ -101,8 +134,15 @@ while True:
                     snake.player_name += event.unicode
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
-                input_text, input_text_position = graphics.game_state_name_input(snake.player_name)
-                click_rect = pygame.Rect(input_text_position[0], input_text_position[1], input_text.get_width(), input_text.get_height())
+                input_text, input_text_position = graphics.game_state_name_input(
+                    snake.player_name
+                )
+                click_rect = pygame.Rect(
+                    input_text_position[0],
+                    input_text_position[1],
+                    input_text.get_width(),
+                    input_text.get_height(),
+                )
                 if klases.is_button_clicked(click_rect, pos):
                     game_state = settings.GAME
 
@@ -130,7 +170,14 @@ while True:
     screen.blit(graphics.background, (0, 0))
 
     if game_state == settings.MENU:
-        title_text, start_button, leaderboard_button, exit_button, checkbox, checkbox_rect = graphics.game_state_menu(auto_move)
+        (
+            title_text,
+            start_button,
+            leaderboard_button,
+            exit_button,
+            checkbox,
+            checkbox_rect,
+        ) = graphics.game_state_menu(auto_move)
     elif game_state == settings.NAME_INPUT:
         if last_player_name != "":
             snake.player_name = last_player_name
