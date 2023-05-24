@@ -1,4 +1,4 @@
-from classes import Snake, Food, Leadreboard
+from classes import Snake, Food, Leaderboard
 import settings
 import graphics
 import pygame
@@ -24,7 +24,7 @@ pygame.mixer.music.play()
 snake = Snake.Snake()
 food = Food.Food(snake)
 
-leaderboard = Leadreboard.load_leaderboard()
+leaderboard = Leaderboard.Leaderboard.load_leaderboard()
 last_player_name = ""
 
 game_state = settings.MENU
@@ -157,7 +157,7 @@ while True:
         if snake.check_collision():
             game_state = settings.MENU
             leaderboard.add_score(snake.player_name, snake.score)
-            Leadreboard.save_leaderboard(leaderboard)
+            Leaderboard.Leaderboard.save_leaderboard(leaderboard)
             last_player_name = snake.player_name
             snake = Snake.Snake()
             food = Food.Food(snake)
@@ -188,8 +188,9 @@ while True:
         food.draw(screen)
         graphics.game_state_game(snake.player_name, snake.score, auto_move)
     elif game_state == settings.LEADERBOARD:
+        leaderboard = Leaderboard.Leaderboard.load_leaderboard()
         back_text_position, back_text = graphics.game_state_leaderboard(leaderboard)
         graphics.game_state_leaderboard(leaderboard)
 
     pygame.display.flip()
-    clock.tick(30)
+    clock.tick(15)

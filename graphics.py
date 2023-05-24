@@ -339,13 +339,13 @@ def game_state_leaderboard(leaderboard):
     screen.blit(back_text_border, (back_text_position[0], back_text_position[1] + 2))
     screen.blit(back_text, back_text_position)
 
-    sorted_scores = sorted(
-        leaderboard.scores, key=lambda entry: entry["score"], reverse=True
+    sorted_entries = sorted(
+        leaderboard.entries, key=lambda entry: entry.score, reverse=True
     )
 
-    for i, entry in enumerate(sorted_scores):
-        player_name = entry["player_name"]
-        score = entry["score"]
+    for i, entry in enumerate(sorted_entries):
+        player_name = entry.player_name
+        score = entry.score
 
         entry_text = f"{player_name}: {score}"
         entry_text_border = entry_font.render(entry_text, True, settings.GREEN)
