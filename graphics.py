@@ -1,5 +1,5 @@
-import pygame
 import settings
+import pygame
 
 
 def get_image(sheet, frame_w, frame_h, width, height, scale, color):

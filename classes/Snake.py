@@ -1,9 +1,7 @@
-from random import randint
-from pygame.math import Vector2
-import pygame
-import pickle
 import settings
 import graphics
+from pygame.math import Vector2
+import pygame
 
 
 class Snake:
@@ -152,65 +150,3 @@ class Snake:
             if segment == self.body[0]:
                 return True
         return False
-
-
-class Food:
-    def __init__(self, snake_position):
-        self.position = self.generate_position(snake_position)
-
-    def generate_position(self, snake_position):
-        while True:
-            new_position = (
-                randint(1, settings.GRID_WIDTH - 2),
-                randint(2, settings.GRID_HEIGHT - 2),
-            )
-            if new_position not in snake_position.body:
-                return new_position
-
-    def draw(self, screen):
-        screen.blit(
-            graphics.frame_food,
-            pygame.Rect(
-                (self.position[0] * settings.GRID_SIZE),
-                (self.position[1] * settings.GRID_SIZE),
-                settings.GRID_SIZE,
-                settings.GRID_SIZE,
-            ),
-        )
-
-
-class Leaderboard:
-    def __init__(self):
-        self.scores = []
-
-    def add_score(self, player_name, score):
-        if player_name.strip() != "" and score > 0:
-            for entry in self.scores:
-                if entry["player_name"] == player_name:
-                    if score > entry["score"]:
-                        entry["score"] = score
-                    return
-
-            entry = {"player_name": player_name, "score": score}
-            self.scores.append(entry)
-            self.scores = sorted(self.scores, key=lambda x: x["score"], reverse=True)[
-                :15
-            ]
-
-
-def is_button_clicked(rect, pos):
-    return rect.collidepoint(pos)
-
-
-def save_leaderboard(leaderboard):
-    with open("leaderboard_data.pickle", "wb") as file:
-        pickle.dump(leaderboard, file)
-
-
-def load_leaderboard():
-    try:
-        with open("leaderboard_data.pickle", "rb") as file:
-            leaderboard = pickle.load(file)
-    except FileNotFoundError:
-        leaderboard = Leaderboard()
-    return leaderboard

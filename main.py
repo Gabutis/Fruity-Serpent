@@ -1,12 +1,13 @@
+from classes import Snake, Food, Leadreboard
+import settings
+import graphics
 import pygame
 import sys
-import settings
-import klases
-import graphics
 
-# import pickle!!!
-# import black to clean the code
-# duomenu baze sql alchemy
+
+def is_button_clicked(rect, pos):
+    return rect.collidepoint(pos)
+
 
 pygame.init()
 pygame.mixer.init()
@@ -20,10 +21,10 @@ sound_bite = pygame.mixer.Sound("sounds/Bite.mp3")
 pygame.mixer.music.load("sounds/background_sound.mp3")
 pygame.mixer.music.play()
 
-snake = klases.Snake()
-food = klases.Food(snake)
+snake = Snake.Snake()
+food = Food.Food(snake)
 
-leaderboard = klases.load_leaderboard()
+leaderboard = Leadreboard.load_leaderboard()
 last_player_name = ""
 
 game_state = settings.MENU
@@ -72,17 +73,17 @@ while True:
                         settings.GRID_SIZE + 10,
                     )
                 )
-                if klases.is_button_clicked(start_button_rect, pos):
+                if is_button_clicked(start_button_rect, pos):
                     if not auto_move:
                         game_state = settings.NAME_INPUT
                     else:
                         game_state = settings.GAME
-                if klases.is_button_clicked(exit_button_rect, pos):
+                if is_button_clicked(exit_button_rect, pos):
                     pygame.quit()
                     sys.exit()
-                if klases.is_button_clicked(leaderboard_button_rect, pos):
+                if is_button_clicked(leaderboard_button_rect, pos):
                     game_state = settings.LEADERBOARD
-                if klases.is_button_clicked(checkbox_rect, pos):
+                if is_button_clicked(checkbox_rect, pos):
                     auto_move = not auto_move
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -143,7 +144,7 @@ while True:
                     input_text.get_width(),
                     input_text.get_height(),
                 )
-                if klases.is_button_clicked(click_rect, pos):
+                if is_button_clicked(click_rect, pos):
                     game_state = settings.GAME
 
     if game_state == settings.GAME:
@@ -156,10 +157,10 @@ while True:
         if snake.check_collision():
             game_state = settings.MENU
             leaderboard.add_score(snake.player_name, snake.score)
-            klases.save_leaderboard(leaderboard)
+            Leadreboard.save_leaderboard(leaderboard)
             last_player_name = snake.player_name
-            snake = klases.Snake()
-            food = klases.Food(snake)
+            snake = Snake.Snake()
+            food = Food.Food(snake)
 
         if snake.body[0] == food.position:
             sound_bite.play()
@@ -191,4 +192,4 @@ while True:
         graphics.game_state_leaderboard(leaderboard)
 
     pygame.display.flip()
-    clock.tick(10)
+    clock.tick(30)
