@@ -19,27 +19,38 @@ screen = pygame.display.set_mode((800, 600))
 background = pygame.image.load("pictures/background.jpg")
 background = pygame.transform.scale(background, (settings.WIDTH, settings.HEIGHT))
 
-snake_sprite = pygame.image.load("pictures/snake_sprite.png").convert_alpha()
+snake_sprite = pygame.image.load("pictures/snake_sprite.png")
 
-frame_btr = get_image(snake_sprite, 0, 0, 64, 64, 1, settings.BLACK)
-frame_btl = get_image(snake_sprite, 2, 0, 64, 64, 1, settings.BLACK)
-frame_bbr = get_image(snake_sprite, 0, 1, 64, 64, 1, settings.BLACK)
-frame_bbl = get_image(snake_sprite, 2, 2, 64, 64, 1, settings.BLACK)
+frame_btr = get_image(snake_sprite, 0, 0, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_btl = get_image(snake_sprite, 2, 0, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_bbr = get_image(snake_sprite, 0, 1, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_bbl = get_image(snake_sprite, 2, 2, 64, 64, 1, settings.BLACK).convert_alpha()
 
-frame_bh = get_image(snake_sprite, 1, 0, 64, 64, 1, settings.BLACK)
-frame_bv = get_image(snake_sprite, 2, 1, 64, 64, 1, settings.BLACK)
+frame_bh = get_image(snake_sprite, 1, 0, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_bv = get_image(snake_sprite, 2, 1, 64, 64, 1, settings.BLACK).convert_alpha()
 
-frame_hr = get_image(snake_sprite, 4, 0, 64, 64, 1, settings.BLACK)
-frame_hl = get_image(snake_sprite, 3, 1, 64, 64, 1, settings.BLACK)
-frame_ht = get_image(snake_sprite, 3, 0, 64, 64, 1, settings.BLACK)
-frame_hb = get_image(snake_sprite, 4, 1, 64, 64, 1, settings.BLACK)
+frame_hr = get_image(snake_sprite, 4, 0, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_hl = get_image(snake_sprite, 3, 1, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_ht = get_image(snake_sprite, 3, 0, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_hb = get_image(snake_sprite, 4, 1, 64, 64, 1, settings.BLACK).convert_alpha()
 
-frame_tr = get_image(snake_sprite, 3, 3, 64, 64, 1, settings.BLACK)
-frame_tl = get_image(snake_sprite, 4, 2, 64, 64, 1, settings.BLACK)
-frame_tt = get_image(snake_sprite, 4, 3, 64, 64, 1, settings.BLACK)
-frame_tb = get_image(snake_sprite, 3, 2, 64, 64, 1, settings.BLACK)
+frame_tr = get_image(snake_sprite, 3, 3, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_tl = get_image(snake_sprite, 4, 2, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_tt = get_image(snake_sprite, 4, 3, 64, 64, 1, settings.BLACK).convert_alpha()
+frame_tb = get_image(snake_sprite, 3, 2, 64, 64, 1, settings.BLACK).convert_alpha()
 
-frame_food = get_image(snake_sprite, 0, 3, 66, 64, 1, settings.BLACK)
+frame_food = get_image(snake_sprite, 0, 3, 66, 64, 1, settings.BLACK).convert_alpha()
+
+banana_sprite = pygame.image.load("pictures/banana.png")
+
+frame_superfood0 = get_image(banana_sprite, 0, 0, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood1 = get_image(banana_sprite, 1, 0, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood2 = get_image(banana_sprite, 2, 0, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood3 = get_image(banana_sprite, 3, 0, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood4 = get_image(banana_sprite, 0, 1, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood5 = get_image(banana_sprite, 1, 1, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood6 = get_image(banana_sprite, 2, 1, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
+frame_superfood7 = get_image(banana_sprite, 3, 1, 546.5, 546.5, 1, settings.BLACK).convert_alpha()
 
 
 def game_state_menu(auto_move):

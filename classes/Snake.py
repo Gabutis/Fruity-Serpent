@@ -10,6 +10,7 @@ class Snake:
         self.direction = Vector2(1, 0)
         self.score = 0
         self.player_name = ""
+        self.auto_move = False
 
     def move(self, food_position, auto_move=False):
         head = self.body[0]

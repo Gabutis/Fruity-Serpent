@@ -1,4 +1,5 @@
-from classes import Snake, Food, Leaderboard
+from classes import Snake, Food, SuperFood, Leaderboard
+import sounds
 import settings
 import graphics
 import pygame
@@ -12,24 +13,21 @@ def is_button_clicked(rect, pos):
 pygame.init()
 pygame.mixer.init()
 
+sounds.pygame.mixer.music.play()
+
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
 pygame.display.set_caption("Baigiamasis Gyvatukas")
 
-sound_bite = pygame.mixer.Sound("sounds/Bite.mp3")
-pygame.mixer.music.load("sounds/background_sound.mp3")
-pygame.mixer.music.play()
-
 snake = Snake.Snake()
 food = Food.Food(snake)
+superfood = SuperFood.SuperFood()
 
 leaderboard = Leaderboard.Leaderboard.load_leaderboard()
 last_player_name = ""
 
 game_state = settings.MENU
-
-auto_move = False
 
 start_button = None
 leaderboard_button = None
@@ -74,7 +72,7 @@ while True:
                     )
                 )
                 if is_button_clicked(start_button_rect, pos):
-                    if not auto_move:
+                    if not snake.auto_move:
                         game_state = settings.NAME_INPUT
                     else:
                         game_state = settings.GAME
@@ -84,10 +82,10 @@ while True:
                 if is_button_clicked(leaderboard_button_rect, pos):
                     game_state = settings.LEADERBOARD
                 if is_button_clicked(checkbox_rect, pos):
-                    auto_move = not auto_move
+                    snake.auto_move = not snake.auto_move
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                if not auto_move:
+                if not snake.auto_move:
                     game_state = settings.NAME_INPUT
                 else:
                     game_state = settings.GAME
@@ -148,25 +146,41 @@ while True:
                     game_state = settings.GAME
 
     if game_state == settings.GAME:
-        if auto_move:
-            snake.move_towards_food(food.position)
-            snake.move(food.position, auto_move=True)
+        if snake.auto_move:
+            if superfood.position is not None:
+                snake.move_towards_food(superfood.position)
+                snake.move(superfood.position, auto_move=True)
+            else:
+                snake.move_towards_food(food.position)
+                snake.move(food.position, auto_move=True)
         else:
             snake.move(food.position)
 
         if snake.check_collision():
+            sounds.sound_collision.play()
+            superfood.position = None
             game_state = settings.MENU
             leaderboard.add_score(snake.player_name, snake.score)
             Leaderboard.Leaderboard.save_leaderboard(leaderboard)
             last_player_name = snake.player_name
             snake = Snake.Snake()
-            food = Food.Food(snake)
 
         if snake.body[0] == food.position:
-            sound_bite.play()
+            sounds.sound_bite.play()
             snake.score += 1
             snake.grow()
             food.position = food.generate_position(snake)
+            if superfood.position is None:
+                superfood.food_spawns += 1
+                superfood.update(snake)
+            else:
+                superfood.draw(screen)
+
+        if snake.body[0] == superfood.position:
+            sounds.sound_bite.play()
+            snake.score += 2
+            snake.body.pop()
+            superfood.position = None
 
     screen.blit(graphics.background, (0, 0))
 
@@ -178,7 +192,7 @@ while True:
             exit_button,
             checkbox,
             checkbox_rect,
-        ) = graphics.game_state_menu(auto_move)
+        ) = graphics.game_state_menu(snake.auto_move)
     elif game_state == settings.NAME_INPUT:
         if last_player_name != "":
             snake.player_name = last_player_name
@@ -186,7 +200,8 @@ while True:
     elif game_state == settings.GAME:
         snake.draw(screen)
         food.draw(screen)
-        graphics.game_state_game(snake.player_name, snake.score, auto_move)
+        superfood.draw(screen)
+        graphics.game_state_game(snake.player_name, snake.score, snake.auto_move)
     elif game_state == settings.LEADERBOARD:
         leaderboard = Leaderboard.Leaderboard.load_leaderboard()
         back_text_position, back_text = graphics.game_state_leaderboard(leaderboard)
