@@ -6,10 +6,6 @@ import pygame
 import sys
 
 
-def is_button_clicked(rect, pos):
-    return rect.collidepoint(pos)
-
-
 pygame.init()
 pygame.mixer.init()
 
@@ -71,17 +67,17 @@ while True:
                         settings.GRID_SIZE + 10,
                     )
                 )
-                if is_button_clicked(start_button_rect, pos):
+                if start_button_rect.collidepoint(pos):
                     if not snake.auto_move:
                         game_state = settings.NAME_INPUT
                     else:
                         game_state = settings.GAME
-                if is_button_clicked(exit_button_rect, pos):
+                if exit_button_rect.collidepoint(pos):
                     pygame.quit()
                     sys.exit()
-                if is_button_clicked(leaderboard_button_rect, pos):
+                if leaderboard_button_rect.collidepoint(pos):
                     game_state = settings.LEADERBOARD
-                if is_button_clicked(checkbox_rect, pos):
+                if checkbox_rect.collidepoint(pos):
                     snake.auto_move = not snake.auto_move
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -142,7 +138,7 @@ while True:
                     input_text.get_width(),
                     input_text.get_height(),
                 )
-                if is_button_clicked(click_rect, pos):
+                if click_rect.collidepoint(pos):
                     game_state = settings.GAME
 
     if game_state == settings.GAME:
@@ -181,6 +177,7 @@ while True:
             snake.score += 2
             snake.body.pop()
             superfood.position = None
+            superfood.timer = 0
 
     screen.blit(graphics.background, (0, 0))
 
