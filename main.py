@@ -198,10 +198,14 @@ while True:
         serpent1.draw(screen)
         food.draw(screen)
         superfood.draw(screen)
-        graphics.game_state_game(serpent1.player_name, serpent1.score, serpent1.auto_move)
+        graphics.game_state_game(
+            serpent1.player_name, serpent1.score, serpent1.auto_move
+        )
     elif game_state == settings.LEADERBOARD:
         leaderboard_game = leaderboard.Leaderboard.load_leaderboard()
-        back_text_position, back_text = graphics.game_state_leaderboard(leaderboard_game)
+        back_text_position, back_text = graphics.game_state_leaderboard(
+            leaderboard_game
+        )
         graphics.game_state_leaderboard(leaderboard_game)
 
     pygame.display.flip()

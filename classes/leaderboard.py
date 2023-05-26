@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from pathlib import Path
 
 
-db_url = "sqlite:///leaderboard.db"
+documents_dir = Path("~/Documents").expanduser()
+db_file_path = documents_dir / "Fruity Serpent leaderboards.db"
+db_url = f"sqlite:///{db_file_path}"
 
 engine = create_engine(db_url)
 Session = sessionmaker(bind=engine)
