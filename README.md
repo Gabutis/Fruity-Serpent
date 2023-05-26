@@ -43,23 +43,8 @@ Fruity Serpent is a classic snake game built as a Python project. It was created
 
 The following dependencies are required to run Fruity Serpent:
 
-- altgraph==0.17.3
-- black==23.3.0
-- click==8.1.3
-- colorama==0.4.6
-- greenlet==2.0.2
-- mypy-extensions==1.0.0
-- packaging==23.1
-- pathspec==0.11.1
-- pefile==2023.2.7
-- platformdirs==3.5.1
 - pygame==2.4.0
-- pyinstaller==5.11.0
-- pyinstaller-hooks-contrib==2023.3
-- pywin32-ctypes==0.2.0
 - SQLAlchemy==2.0.15
-- tomli==2.0.1
-- typing_extensions==4.6.2
 
 ## Contributing
 
