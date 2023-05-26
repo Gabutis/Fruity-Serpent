@@ -72,8 +72,8 @@ frame_superfood7 = get_image(
 def game_state_menu(auto_move):
     menu_font = pygame.font.Font(None, 36)
 
-    title_text_border = menu_font.render("Baigiamasis Gyvatukas", True, settings.GREEN)
-    title_text = menu_font.render("Baigiamasis Gyvatukas", True, settings.PURPLE)
+    title_text_border = menu_font.render("Fruity Serpent", True, settings.GREEN)
+    title_text = menu_font.render("Fruity Serpent", True, settings.PURPLE)
     title_text_position = (
         settings.WIDTH // 2 - title_text.get_width() // 2,
         settings.HEIGHT // 2 - 250,

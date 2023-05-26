@@ -14,10 +14,10 @@ sounds.pygame.mixer.music.play()
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
-pygame.display.set_caption("Gabutis-Snake")
+pygame.display.set_caption("Fruity Serpent")
 
-snake1 = snake.Snake()
-food = food.Food(snake1)
+serpent1 = snake.Snake()
+food = food.Food(serpent1)
 superfood = superfood.SuperFood()
 
 leaderboard_game = leaderboard.Leaderboard.load_leaderboard()
@@ -68,7 +68,7 @@ while True:
                     )
                 )
                 if start_button_rect.collidepoint(pos):
-                    if not snake1.auto_move:
+                    if not serpent1.auto_move:
                         game_state = settings.NAME_INPUT
                     else:
                         game_state = settings.GAME
@@ -78,10 +78,10 @@ while True:
                 if leaderboard_button_rect.collidepoint(pos):
                     game_state = settings.LEADERBOARD
                 if checkbox_rect.collidepoint(pos):
-                    snake1.auto_move = not snake1.auto_move
+                    serpent1.auto_move = not serpent1.auto_move
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                if not snake1.auto_move:
+                if not serpent1.auto_move:
                     game_state = settings.NAME_INPUT
                 else:
                     game_state = settings.GAME
@@ -91,14 +91,14 @@ while True:
 
         elif game_state == settings.GAME:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w and snake1.direction != (0, 1):
-                    snake1.direction = (0, -1)
-                elif event.key == pygame.K_s and snake1.direction != (0, -1):
-                    snake1.direction = (0, 1)
-                elif event.key == pygame.K_a and snake1.direction != (1, 0):
-                    snake1.direction = (-1, 0)
-                elif event.key == pygame.K_d and snake1.direction != (-1, 0):
-                    snake1.direction = (1, 0)
+                if event.key == pygame.K_w and serpent1.direction != (0, 1):
+                    serpent1.direction = (0, -1)
+                elif event.key == pygame.K_s and serpent1.direction != (0, -1):
+                    serpent1.direction = (0, 1)
+                elif event.key == pygame.K_a and serpent1.direction != (1, 0):
+                    serpent1.direction = (-1, 0)
+                elif event.key == pygame.K_d and serpent1.direction != (-1, 0):
+                    serpent1.direction = (1, 0)
 
         elif game_state == settings.LEADERBOARD:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
@@ -119,18 +119,18 @@ while True:
                 if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     game_state = settings.GAME
                 elif event.key == pygame.K_BACKSPACE:
-                    if snake1.player_name:
-                        snake1.player_name = snake1.player_name[:-1]
+                    if serpent1.player_name:
+                        serpent1.player_name = serpent1.player_name[:-1]
                         last_player_name = last_player_name[:-1]
                 elif event.unicode.isprintable():
                     if last_player_name != "":
                         last_player_name = ""
-                        snake1.player_name = ""
-                    snake1.player_name += event.unicode
+                        serpent1.player_name = ""
+                    serpent1.player_name += event.unicode
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
                 input_text, input_text_position = graphics.game_state_name_input(
-                    snake1.player_name
+                    serpent1.player_name
                 )
                 click_rect = pygame.Rect(
                     input_text_position[0],
@@ -142,40 +142,40 @@ while True:
                     game_state = settings.GAME
 
     if game_state == settings.GAME:
-        if snake1.auto_move:
+        if serpent1.auto_move:
             if superfood.position is not None:
-                snake1.move_towards_food(superfood.position)
-                snake1.move(superfood.position, auto_move=True)
+                serpent1.move_towards_food(superfood.position)
+                serpent1.move(superfood.position, auto_move=True)
             else:
-                snake1.move_towards_food(food.position)
-                snake1.move(food.position, auto_move=True)
+                serpent1.move_towards_food(food.position)
+                serpent1.move(food.position, auto_move=True)
         else:
-            snake1.move(food.position)
+            serpent1.move(food.position)
 
-        if snake1.check_collision():
+        if serpent1.check_collision():
             sounds.sound_collision.play()
             superfood.position = None
             game_state = settings.MENU
-            leaderboard_game.add_score(snake1.player_name, snake1.score)
+            leaderboard_game.add_score(serpent1.player_name, serpent1.score)
             leaderboard.Leaderboard.save_leaderboard(leaderboard_game)
-            last_player_name = snake1.player_name
-            snake1 = snake.Snake()
+            last_player_name = serpent1.player_name
+            serpent1 = snake.Snake()
 
-        if snake1.body[0] == food.position:
+        if serpent1.body[0] == food.position:
             sounds.sound_bite.play()
-            snake1.score += 1
-            snake1.grow()
-            food.position = food.generate_position(snake1)
+            serpent1.score += 1
+            serpent1.grow()
+            food.position = food.generate_position(serpent1)
             if superfood.position is None:
                 superfood.food_spawns += 1
-                superfood.update(snake1)
+                superfood.update(serpent1)
             else:
                 superfood.draw(screen)
 
-        if snake1.body[0] == superfood.position:
+        if serpent1.body[0] == superfood.position:
             sounds.sound_bite.play()
-            snake1.score += 2
-            snake1.body.pop()
+            serpent1.score += 2
+            serpent1.body.pop()
             superfood.position = None
             superfood.timer = 0
 
@@ -189,16 +189,16 @@ while True:
             exit_button,
             checkbox,
             checkbox_rect,
-        ) = graphics.game_state_menu(snake1.auto_move)
+        ) = graphics.game_state_menu(serpent1.auto_move)
     elif game_state == settings.NAME_INPUT:
         if last_player_name != "":
-            snake1.player_name = last_player_name
-        graphics.game_state_name_input(snake1.player_name)
+            serpent1.player_name = last_player_name
+        graphics.game_state_name_input(serpent1.player_name)
     elif game_state == settings.GAME:
-        snake1.draw(screen)
+        serpent1.draw(screen)
         food.draw(screen)
         superfood.draw(screen)
-        graphics.game_state_game(snake1.player_name, snake1.score, snake1.auto_move)
+        graphics.game_state_game(serpent1.player_name, serpent1.score, serpent1.auto_move)
     elif game_state == settings.LEADERBOARD:
         leaderboard_game = leaderboard.Leaderboard.load_leaderboard()
         back_text_position, back_text = graphics.game_state_leaderboard(leaderboard_game)
