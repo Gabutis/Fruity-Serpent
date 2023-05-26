@@ -22,7 +22,7 @@ Fruity Serpent is a classic snake game built as a Python project. It was created
 
 ### Using the .exe (Windows)
 
-1. Download the latest release of Fruity Serpent from the [Releases](https://github.com/Gabutis/Fruity-Serpent/releases) page.
+1. Download the latest release of Fruity Serpent from the [Releases](https://github.com/Gabutis/Fruity_Serpent/releases) page.
 2. Locate the downloaded .exe file.
 3. Double-click the .exe file to run the game.
 
