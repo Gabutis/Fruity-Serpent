@@ -1,6 +1,6 @@
 # Fruity Serpent
 
-![Fruity Serpent Logo](logo.png)
+![Fruity Serpent Logo](pictures/logo.png)
 
 Fruity Serpent is a classic snake game built as a Python project. It was created as the final project for the "Python for Beginners" course, serving as a practical application to reinforce and showcase Python programming skills.
 
@@ -13,7 +13,7 @@ Fruity Serpent is a classic snake game built as a Python project. It was created
 
 ## Gameplay
 
-![Fruity Serpent Gameplay](gameplay.gif)
+![Fruity Serpent Gameplay](pictures/gameplay.gif)
 
 🍎 - Apples: Grant 1 score
 🍌 - Bananas: Grant 2 score and shrink the serpent
