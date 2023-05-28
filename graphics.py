@@ -16,7 +16,7 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
-base_path = r'C:\Users\vidma\PycharmProjects\Fruity-Serpent'
+base_path = r'C:\Users\vidma\PycharmProjects\Fruity_Serpent'
 
 icon_path = os.path.join(base_path, "pictures", "icon_for_game.png")
 icon_image = pygame.image.load(icon_path)

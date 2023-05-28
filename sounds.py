@@ -2,7 +2,7 @@ import pygame
 import os
 
 
-base_path = r'C:\Users\vidma\PycharmProjects\Fruity-Serpent'
+base_path = r'C:\Users\vidma\PycharmProjects\Fruity_Serpent'
 
 sound_bite_path = os.path.join(base_path, "sounds", "bite.mp3")
 sound_bite = pygame.mixer.Sound(sound_bite_path)
