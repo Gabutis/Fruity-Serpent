@@ -20,11 +20,14 @@ Fruity Serpent is a classic snake game built as a Python project. It was created
 
 ## Installation
 
-### Using the .exe (Windows)
+### Using the Installer (Windows)
 
 1. Download the latest release of Fruity Serpent from the [Releases](https://github.com/Gabutis/Fruity_Serpent/releases) page.
-2. Locate the downloaded .exe file.
-3. Double-click the .exe file to run the game.
+2. Locate the downloaded `Fruity_Serpent_Installer.exe` file.
+3. Double-click the `Fruity_Serpent_Installer.exe` file to run the installer.
+4. Follow the on-screen instructions to install the game.
+5. After the installation finishes, navigate to the folder where you installed Fruity Serpent.
+6. Run the `Fruity_Serpent.exe` file to start the game.
 
 ### Using Python and requirements.txt
 
