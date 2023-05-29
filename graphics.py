@@ -1,6 +1,5 @@
 import settings
 import pygame
-import os
 
 
 def get_image(sheet, frame_w, frame_h, width, height, scale, color):
@@ -16,18 +15,13 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
-base_path = r'C:\Users\vidma\PycharmProjects\Fruity_Serpent'
-
-icon_path = os.path.join(base_path, "pictures", "icon_for_game.png")
-icon_image = pygame.image.load(icon_path)
+icon_image = pygame.image.load("pictures/icon_for_game.png")
 pygame.display.set_icon(icon_image)
 
-background_path = os.path.join(base_path, "pictures", "background.jpg")
-background = pygame.image.load(background_path)
+background = pygame.image.load("pictures/background.jpg")
 background = pygame.transform.scale(background, (settings.WIDTH, settings.HEIGHT))
 
-snake_sprite_path = os.path.join(base_path, "pictures", "snake_sprite.png")
-snake_sprite = pygame.image.load(snake_sprite_path)
+snake_sprite = pygame.image.load("pictures/snake_sprite.png")
 
 frame_btr = get_image(snake_sprite, 0, 0, 64, 64, 1, settings.BLACK).convert_alpha()
 frame_btl = get_image(snake_sprite, 2, 0, 64, 64, 1, settings.BLACK).convert_alpha()
@@ -49,8 +43,7 @@ frame_tb = get_image(snake_sprite, 3, 2, 64, 64, 1, settings.BLACK).convert_alph
 
 frame_food = get_image(snake_sprite, 0, 3, 66, 64, 1, settings.BLACK).convert_alpha()
 
-banana_sprite_path = os.path.join(base_path, "pictures", "banana.png")
-banana_sprite = pygame.image.load(banana_sprite_path)
+banana_sprite = pygame.image.load("pictures/banana.png")
 
 frame_superfood0 = get_image(
     banana_sprite, 0, 0, 546.5, 546.5, 1, settings.BLACK
