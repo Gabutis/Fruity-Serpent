@@ -13,7 +13,7 @@ sounds.pygame.mixer.music.play()
 
 clock = pygame.time.Clock()
 
-screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT))
+screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Fruity Serpent")
 
 serpent1 = snake.Snake()
@@ -27,6 +27,7 @@ game_state = settings.MENU
 
 start_button = None
 leaderboard_button = None
+settings_button = None
 exit_button = None
 checkbox = None
 back_text = None
@@ -36,6 +37,15 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+        if event.type == pygame.VIDEORESIZE:
+            graphics.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+            graphics.menu_background = pygame.transform.scale(graphics.menu_background, (event.w, event.h))
+            graphics.game_background = pygame.transform.scale(graphics.game_background, (event.w, event.h))
+            settings.GRID_WIDTH = event.w // settings.GRID_SIZE
+            settings.GRID_HEIGHT = (event.h - settings.GRID_SIZE) // settings.GRID_SIZE
+            settings.WIDTH = event.w
+            settings.HEIGHT = event.h
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             pygame.quit()
@@ -53,6 +63,12 @@ while True:
                     topleft=(
                         settings.WIDTH // 2 - leaderboard_button.get_width() // 2,
                         settings.HEIGHT // 2,
+                    )
+                )
+                settings_button_rect = settings_button.get_rect(
+                    topleft=(
+                        settings.WIDTH // 2 - settings_button.get_width() // 2,
+                        settings.HEIGHT // 2 + 50,
                     )
                 )
                 exit_button_rect = exit_button.get_rect(
@@ -77,6 +93,8 @@ while True:
                     sys.exit()
                 if leaderboard_button_rect.collidepoint(pos):
                     game_state = settings.LEADERBOARD
+                if settings_button_rect.collidepoint(pos):
+                    game_state = settings.SETTINGS
                 if checkbox_rect.collidepoint(pos):
                     serpent1.auto_move = not serpent1.auto_move
 
@@ -88,6 +106,9 @@ while True:
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_l:
                 game_state = settings.LEADERBOARD
+
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                game_state = settings.SETTINGS
 
         elif game_state == settings.GAME:
             if event.type == pygame.KEYDOWN:
@@ -141,6 +162,20 @@ while True:
                 if click_rect.collidepoint(pos):
                     game_state = settings.GAME
 
+        elif game_state == settings.SETTINGS:
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                game_state = settings.MENU
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                pos = pygame.mouse.get_pos()
+                back_text_rect = back_text.get_rect(
+                    topleft=(
+                        settings.WIDTH // 2 - back_text.get_width() // 2,
+                        settings.HEIGHT - 50,
+                    )
+                )
+                if back_text_rect.collidepoint(pos):
+                    game_state = settings.MENU
+
     if game_state == settings.GAME:
         if serpent1.auto_move:
             if superfood.position is not None:
@@ -179,13 +214,13 @@ while True:
             superfood.position = None
             superfood.timer = 0
 
-    screen.blit(graphics.background, (0, 0))
+    screen.blit(graphics.menu_background, (0, 0))
 
     if game_state == settings.MENU:
         (
-            title_text,
             start_button,
             leaderboard_button,
+            settings_button,
             exit_button,
             checkbox,
             checkbox_rect,
@@ -195,6 +230,7 @@ while True:
             serpent1.player_name = last_player_name
         graphics.game_state_name_input(serpent1.player_name)
     elif game_state == settings.GAME:
+        screen.blit(graphics.game_background, (0, 0))
         serpent1.draw(screen)
         food.draw(screen)
         superfood.draw(screen)
@@ -203,10 +239,11 @@ while True:
         )
     elif game_state == settings.LEADERBOARD:
         leaderboard_game = leaderboard.Leaderboard.load_leaderboard()
-        back_text_position, back_text = graphics.game_state_leaderboard(
-            leaderboard_game
-        )
+        back_text = graphics.game_state_leaderboard(leaderboard_game)
         graphics.game_state_leaderboard(leaderboard_game)
+    elif game_state == settings.SETTINGS:
+        back_text = graphics.game_state_settings()
+        graphics.game_state_settings()
 
     pygame.display.flip()
     clock.tick(15)

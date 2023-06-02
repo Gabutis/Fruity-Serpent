@@ -12,14 +12,29 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
     return image
 
 
+def draw_text_with_border(text, position=0, font=36):
+    text_font = pygame.font.Font(None, font)
+    text_outer = text_font.render(text, True, settings.GREEN)
+    text_inner = text_font.render(text, True, settings.PURPLE)
+    text_position = (settings.WIDTH // 2 - text_inner.get_width() // 2, settings.HEIGHT // 2 - position)
+    screen.blit(text_outer, (text_position[0] - 2, text_position[1]))
+    screen.blit(text_outer, (text_position[0] + 2, text_position[1]))
+    screen.blit(text_outer, (text_position[0], text_position[1] - 2))
+    screen.blit(text_outer, (text_position[0], text_position[1] + 2))
+    screen.blit(text_inner, text_position)
+
+
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT), pygame.RESIZABLE)
 
 icon_image = pygame.image.load("pictures/icon_for_game.png")
 pygame.display.set_icon(icon_image)
 
-background = pygame.image.load("pictures/background.jpg")
-background = pygame.transform.scale(background, (settings.WIDTH, settings.HEIGHT))
+menu_background = pygame.image.load("pictures/menu_background.jpg")
+menu_background = pygame.transform.scale(menu_background, (settings.WIDTH, settings.HEIGHT))
+
+game_background = pygame.image.load("pictures/game_background.jpg")
+game_background = pygame.transform.scale(game_background, (settings.WIDTH, settings.HEIGHT))
 
 snake_sprite = pygame.image.load("pictures/snake_sprite.png")
 
@@ -74,28 +89,20 @@ frame_superfood7 = get_image(
 def game_state_menu(auto_move):
     menu_font = pygame.font.Font(None, 36)
 
-    title_text_border = menu_font.render("Fruity Serpent", True, settings.GREEN)
-    title_text = menu_font.render("Fruity Serpent", True, settings.PURPLE)
-    title_text_position = (
-        settings.WIDTH // 2 - title_text.get_width() // 2,
-        settings.HEIGHT // 2 - 250,
-    )
-
-    start_button_border = menu_font.render(
-        "Press SPACE or click to start", True, settings.GREEN
-    )
+    draw_text_with_border("Fruity Serpent", 250)
+    draw_text_with_border("Press SPACE or click to start", 50)
     start_button = menu_font.render(
         "Press SPACE or click to start", True, settings.PURPLE
     )
-    leaderboard_button_border = menu_font.render(
-        "Press L or click for Leaderboard", True, settings.GREEN
-    )
+    draw_text_with_border("Press L or click for Leaderboard")
     leaderboard_button = menu_font.render(
         "Press L or click for Leaderboard", True, settings.PURPLE
     )
-    exit_button_border = menu_font.render(
-        "Press ESC or click to EXIT", True, settings.GREEN
+    draw_text_with_border("Press S or click for Settings", -50)
+    settings_button = menu_font.render(
+        "Press S or click for Settings", True, settings.PURPLE
     )
+    draw_text_with_border("Press ESC or click to EXIT", -250)
     exit_button = menu_font.render("Press ESC or click to EXIT", True, settings.PURPLE)
 
     checkbox_label_border = menu_font.render("Auto Move", True, settings.GREEN)
@@ -105,106 +112,6 @@ def game_state_menu(auto_move):
     checkbox_rect = checkbox.get_rect(
         topright=(settings.WIDTH - settings.GRID_SIZE - 10, settings.GRID_SIZE + 10)
     )
-
-    screen.blit(title_text_border, (title_text_position[0] - 2, title_text_position[1]))
-    screen.blit(title_text_border, (title_text_position[0] + 2, title_text_position[1]))
-    screen.blit(title_text_border, (title_text_position[0], title_text_position[1] - 2))
-    screen.blit(title_text_border, (title_text_position[0], title_text_position[1] + 2))
-    screen.blit(title_text, title_text_position)
-
-    screen.blit(
-        start_button_border,
-        (
-            settings.WIDTH // 2 - start_button.get_width() // 2 - 2,
-            settings.HEIGHT // 2 - 50,
-        ),
-    )
-    screen.blit(
-        start_button_border,
-        (
-            settings.WIDTH // 2 - start_button.get_width() // 2 + 2,
-            settings.HEIGHT // 2 - 50,
-        ),
-    )
-    screen.blit(
-        start_button_border,
-        (
-            settings.WIDTH // 2 - start_button.get_width() // 2,
-            settings.HEIGHT // 2 - 2 - 50,
-        ),
-    )
-    screen.blit(
-        start_button_border,
-        (
-            settings.WIDTH // 2 - start_button.get_width() // 2,
-            settings.HEIGHT // 2 + 2 - 50,
-        ),
-    )
-    screen.blit(
-        start_button,
-        (
-            settings.WIDTH // 2 - start_button.get_width() // 2,
-            settings.HEIGHT // 2 - 50,
-        ),
-    )
-
-    screen.blit(
-        leaderboard_button_border,
-        (
-            settings.WIDTH // 2 - leaderboard_button.get_width() // 2 - 2,
-            settings.HEIGHT // 2,
-        ),
-    )
-    screen.blit(
-        leaderboard_button_border,
-        (
-            settings.WIDTH // 2 - leaderboard_button.get_width() // 2 + 2,
-            settings.HEIGHT // 2,
-        ),
-    )
-    screen.blit(
-        leaderboard_button_border,
-        (
-            settings.WIDTH // 2 - leaderboard_button.get_width() // 2,
-            settings.HEIGHT // 2 - 2,
-        ),
-    )
-    screen.blit(
-        leaderboard_button_border,
-        (
-            settings.WIDTH // 2 - leaderboard_button.get_width() // 2,
-            settings.HEIGHT // 2 + 2,
-        ),
-    )
-    screen.blit(
-        leaderboard_button,
-        (
-            settings.WIDTH // 2 - leaderboard_button.get_width() // 2,
-            settings.HEIGHT // 2,
-        ),
-    )
-
-    screen.blit(
-        exit_button_border,
-        (settings.WIDTH // 2 - exit_button.get_width() // 2 - 2, settings.HEIGHT - 50),
-    )
-    screen.blit(
-        exit_button_border,
-        (settings.WIDTH // 2 - exit_button.get_width() // 2 + 2, settings.HEIGHT - 50),
-    )
-    screen.blit(
-        exit_button_border,
-        (settings.WIDTH // 2 - exit_button.get_width() // 2, settings.HEIGHT - 50 - 2),
-    )
-    screen.blit(
-        exit_button_border,
-        (settings.WIDTH // 2 - exit_button.get_width() // 2, settings.HEIGHT - 50 + 2),
-    )
-    screen.blit(
-        exit_button,
-        (settings.WIDTH // 2 - exit_button.get_width() // 2, settings.HEIGHT - 50),
-    )
-
     screen.blit(
         checkbox_label_border,
         (checkbox_rect.left - checkbox_label.get_width() - 10 - 2, checkbox_rect.top),
@@ -228,9 +135,9 @@ def game_state_menu(auto_move):
     screen.blit(checkbox, checkbox_rect)
 
     return (
-        title_text,
         start_button,
         leaderboard_button,
+        settings_button,
         exit_button,
         checkbox,
         checkbox_rect,
@@ -238,12 +145,11 @@ def game_state_menu(auto_move):
 
 
 def game_state_name_input(player_name):
-    input_font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, 36)
 
-    input_text_border = input_font.render(
-        "Enter your name and press SPACE or click to start:", True, settings.GREEN
-    )
-    input_text = input_font.render(
+    draw_text_with_border(player_name)
+    draw_text_with_border("Enter your name and press SPACE or click to start:", 50)
+    input_text = font.render(
         "Enter your name and press SPACE or click to start:", True, settings.PURPLE
     )
     input_text_position = (
@@ -251,36 +157,7 @@ def game_state_name_input(player_name):
         settings.HEIGHT // 2 - 50,
     )
 
-    player_name_text_border = input_font.render(player_name, True, settings.PURPLE)
-    player_name_text = input_font.render(player_name, True, settings.GREEN)
-    player_name_text_position = (
-        settings.WIDTH // 2 - player_name_text.get_width() // 2,
-        settings.HEIGHT // 2,
-    )
 
-    screen.blit(input_text_border, (input_text_position[0] - 2, input_text_position[1]))
-    screen.blit(input_text_border, (input_text_position[0] + 2, input_text_position[1]))
-    screen.blit(input_text_border, (input_text_position[0], input_text_position[1] - 2))
-    screen.blit(input_text_border, (input_text_position[0], input_text_position[1] + 2))
-    screen.blit(input_text, input_text_position)
-
-    screen.blit(
-        player_name_text_border,
-        (player_name_text_position[0] - 2, player_name_text_position[1]),
-    )
-    screen.blit(
-        player_name_text_border,
-        (player_name_text_position[0] + 2, player_name_text_position[1]),
-    )
-    screen.blit(
-        player_name_text_border,
-        (player_name_text_position[0], player_name_text_position[1] - 2),
-    )
-    screen.blit(
-        player_name_text_border,
-        (player_name_text_position[0], player_name_text_position[1] + 2),
-    )
-    screen.blit(player_name_text, player_name_text_position)
 
     return input_text, input_text_position
 
@@ -338,35 +215,13 @@ def game_state_game(player_name, score, auto_move):
 
 
 def game_state_leaderboard(leaderboard):
-    title_font = pygame.font.Font(None, 50)
-    entry_font = pygame.font.Font(None, 36)
-    back_text_font = pygame.font.Font(None, 36)
+    font = pygame.font.Font(None, 36)
 
-    title_text_border = title_font.render("LEADERBOARD", True, settings.GREEN)
-    title_text = title_font.render("LEADERBOARD", True, settings.PURPLE)
-    back_text_border = back_text_font.render(
-        "Press L or click to go back", True, settings.GREEN
-    )
-    back_text = back_text_font.render(
+    draw_text_with_border("LEADERBOARD", 250)
+    draw_text_with_border("Press L or click to go back", -250)
+    back_text = font.render(
         "Press L or click to go back", True, settings.PURPLE
     )
-    title_text_position = (settings.WIDTH // 2 - title_text.get_width() // 2, 50)
-    back_text_position = (
-        settings.WIDTH // 2 - back_text.get_width() // 2,
-        settings.HEIGHT - 50,
-    )
-
-    screen.blit(title_text_border, (title_text_position[0] - 2, title_text_position[1]))
-    screen.blit(title_text_border, (title_text_position[0] + 2, title_text_position[1]))
-    screen.blit(title_text_border, (title_text_position[0], title_text_position[1] - 2))
-    screen.blit(title_text_border, (title_text_position[0], title_text_position[1] + 2))
-    screen.blit(title_text, title_text_position)
-
-    screen.blit(back_text_border, (back_text_position[0] - 2, back_text_position[1]))
-    screen.blit(back_text_border, (back_text_position[0] + 2, back_text_position[1]))
-    screen.blit(back_text_border, (back_text_position[0], back_text_position[1] - 2))
-    screen.blit(back_text_border, (back_text_position[0], back_text_position[1] + 2))
-    screen.blit(back_text, back_text_position)
 
     sorted_entries = sorted(
         leaderboard.entries, key=lambda entry: entry.score, reverse=True
@@ -377,8 +232,8 @@ def game_state_leaderboard(leaderboard):
         score = entry.score
 
         entry_text = f"{player_name}: {score}"
-        entry_text_border = entry_font.render(entry_text, True, settings.GREEN)
-        entry_surface = entry_font.render(entry_text, True, settings.PURPLE)
+        entry_text_border = font.render(entry_text, True, settings.GREEN)
+        entry_surface = font.render(entry_text, True, settings.PURPLE)
 
         entry_rect = entry_text_border.get_rect(
             midtop=(settings.WIDTH // 2, 100 + i * 30)
@@ -389,4 +244,15 @@ def game_state_leaderboard(leaderboard):
         screen.blit(entry_text_border, entry_rect.move(0, 2))
         screen.blit(entry_surface, entry_rect)
 
-    return back_text_position, back_text
+    return back_text
+
+
+def game_state_settings():
+    font = pygame.font.Font(None, 36)
+    draw_text_with_border("SETTINGS", 250)
+    draw_text_with_border("Press S or click to go back", -250)
+    back_text = font.render(
+        "Press S or click to go back", True, settings.PURPLE
+    )
+
+    return back_text
