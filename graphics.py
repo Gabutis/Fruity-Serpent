@@ -12,16 +12,68 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
     return image
 
 
-def draw_text_with_border(text, position=0, font=36):
+def draw_text_with_border(text, offset=0, text_position=None, font=36, highlight_on_mouse=True):
     text_font = pygame.font.Font(None, font)
-    text_outer = text_font.render(text, True, settings.GREEN)
     text_inner = text_font.render(text, True, settings.PURPLE)
-    text_position = (settings.WIDTH // 2 - text_inner.get_width() // 2, settings.HEIGHT // 2 - position)
-    screen.blit(text_outer, (text_position[0] - 2, text_position[1]))
-    screen.blit(text_outer, (text_position[0] + 2, text_position[1]))
-    screen.blit(text_outer, (text_position[0], text_position[1] - 2))
-    screen.blit(text_outer, (text_position[0], text_position[1] + 2))
-    screen.blit(text_inner, text_position)
+    text_outer = text_font.render(text, True, settings.GREEN)
+
+    if text_position is None:
+        text_position = (settings.WIDTH // 2 - text_inner.get_width() // 2, settings.HEIGHT // 2 - offset)
+
+    outer_rect = text_outer.get_rect(topleft=text_position)
+
+    if highlight_on_mouse and outer_rect.collidepoint(pygame.mouse.get_pos()):
+        screen.blit(text_outer, (text_position[0] - 2, text_position[1]))
+        screen.blit(text_outer, (text_position[0] + 2, text_position[1]))
+        screen.blit(text_outer, (text_position[0], text_position[1] - 2))
+        screen.blit(text_outer, (text_position[0], text_position[1] + 2))
+    elif not highlight_on_mouse:
+        screen.blit(text_outer, (text_position[0] - 2, text_position[1]))
+        screen.blit(text_outer, (text_position[0] + 2, text_position[1]))
+        screen.blit(text_outer, (text_position[0], text_position[1] - 2))
+        screen.blit(text_outer, (text_position[0], text_position[1] + 2))
+
+    screen.blit(text_inner, text_inner.get_rect(topleft=text_position))
+
+    return outer_rect
+
+
+def draw_checkbox_with_text(text, text_position=None, checked=False, font=36, highlight_on_mouse=False):
+    checkbox_size = 20
+    checkbox_padding = 5
+    text_font = pygame.font.Font(None, font)
+    text_inner = text_font.render(text, True, settings.PURPLE)
+    text_outer = text_font.render(text, True, settings.GREEN)
+    text_rect = text_inner.get_rect()
+
+    if text_position is None:
+        text_position = (
+        settings.WIDTH // 2 - (checkbox_size + checkbox_padding + text_rect.width) // 2, settings.HEIGHT // 2)
+
+    checkbox_rect = pygame.Rect(text_position[0], text_position[1], checkbox_size, checkbox_size)
+    text_rect.topleft = (text_position[0] + checkbox_size + checkbox_padding, text_position[1])
+
+    if checked:
+        pygame.draw.rect(screen, settings.GREEN, checkbox_rect)
+        pygame.draw.rect(screen, settings.PURPLE, checkbox_rect, 2)
+    else:
+        pygame.draw.rect(screen, settings.PURPLE, checkbox_rect, 2)
+
+    if highlight_on_mouse and (
+            checkbox_rect.collidepoint(pygame.mouse.get_pos()) or text_rect.collidepoint(pygame.mouse.get_pos())):
+        screen.blit(text_outer, (text_rect.left - 2, text_rect.top))
+        screen.blit(text_outer, (text_rect.left + 2, text_rect.top))
+        screen.blit(text_outer, (text_rect.left, text_rect.top - 2))
+        screen.blit(text_outer, (text_rect.left, text_rect.top + 2))
+    elif not highlight_on_mouse:
+        screen.blit(text_outer, (text_rect.left - 2, text_rect.top))
+        screen.blit(text_outer, (text_rect.left + 2, text_rect.top))
+        screen.blit(text_outer, (text_rect.left, text_rect.top - 2))
+        screen.blit(text_outer, (text_rect.left, text_rect.top + 2))
+
+    screen.blit(text_inner, text_rect.topleft)
+
+    return checkbox_rect, text_rect
 
 
 pygame.init()
@@ -86,83 +138,7 @@ frame_superfood7 = get_image(
 ).convert_alpha()
 
 
-def game_state_menu(auto_move):
-    menu_font = pygame.font.Font(None, 36)
-
-    draw_text_with_border("Fruity Serpent", 250)
-    draw_text_with_border("Press SPACE or click to start", 50)
-    start_button = menu_font.render(
-        "Press SPACE or click to start", True, settings.PURPLE
-    )
-    draw_text_with_border("Press L or click for Leaderboard")
-    leaderboard_button = menu_font.render(
-        "Press L or click for Leaderboard", True, settings.PURPLE
-    )
-    draw_text_with_border("Press S or click for Settings", -50)
-    settings_button = menu_font.render(
-        "Press S or click for Settings", True, settings.PURPLE
-    )
-    draw_text_with_border("Press ESC or click to EXIT", -250)
-    exit_button = menu_font.render("Press ESC or click to EXIT", True, settings.PURPLE)
-
-    checkbox_label_border = menu_font.render("Auto Move", True, settings.GREEN)
-    checkbox_label = menu_font.render("Auto Move", True, settings.PURPLE)
-    checkbox = pygame.Surface((20, 20))
-    checkbox.fill(settings.PURPLE if auto_move else settings.WHITE)
-    checkbox_rect = checkbox.get_rect(
-        topright=(settings.WIDTH - settings.GRID_SIZE - 10, settings.GRID_SIZE + 10)
-    )
-    screen.blit(
-        checkbox_label_border,
-        (checkbox_rect.left - checkbox_label.get_width() - 10 - 2, checkbox_rect.top),
-    )
-    screen.blit(
-        checkbox_label_border,
-        (checkbox_rect.left - checkbox_label.get_width() - 10 + 2, checkbox_rect.top),
-    )
-    screen.blit(
-        checkbox_label_border,
-        (checkbox_rect.left - checkbox_label.get_width() - 10, checkbox_rect.top - 2),
-    )
-    screen.blit(
-        checkbox_label_border,
-        (checkbox_rect.left - checkbox_label.get_width() - 10, checkbox_rect.top + 2),
-    )
-    screen.blit(
-        checkbox_label,
-        (checkbox_rect.left - checkbox_label.get_width() - 10, checkbox_rect.top),
-    )
-    screen.blit(checkbox, checkbox_rect)
-
-    return (
-        start_button,
-        leaderboard_button,
-        settings_button,
-        exit_button,
-        checkbox,
-        checkbox_rect,
-    )
-
-
-def game_state_name_input(player_name):
-    font = pygame.font.Font(None, 36)
-
-    draw_text_with_border(player_name)
-    draw_text_with_border("Enter your name and press SPACE or click to start:", 50)
-    input_text = font.render(
-        "Enter your name and press SPACE or click to start:", True, settings.PURPLE
-    )
-    input_text_position = (
-        settings.WIDTH // 2 - input_text.get_width() // 2,
-        settings.HEIGHT // 2 - 50,
-    )
-
-
-
-    return input_text, input_text_position
-
-
-def game_state_game(player_name, score, auto_move):
+def game_state_game():
     pygame.draw.rect(
         screen, settings.GREY, (0, 0, settings.WIDTH, settings.GRID_SIZE * 2)
     )
@@ -178,50 +154,9 @@ def game_state_game(player_name, score, auto_move):
         (settings.WIDTH - settings.GRID_SIZE, 0, settings.GRID_SIZE, settings.HEIGHT),
     )
 
-    font = pygame.font.Font(None, 36)
-    name_text_border = font.render(f"Player: {player_name}", True, settings.GREEN)
-    name_text = font.render(f"Player: {player_name}", True, settings.PURPLE)
-    score_text_border = font.render(f"Score: {score}", True, settings.GREEN)
-    score_text = font.render(f"Score: {score}", True, settings.PURPLE)
-
-    screen.blit(
-        score_text_border, (settings.GRID_SIZE / 2 - 2, settings.GRID_SIZE / 2 - 2)
-    )
-    screen.blit(
-        score_text_border, (settings.GRID_SIZE / 2 + 2, settings.GRID_SIZE / 2 - 2)
-    )
-    screen.blit(
-        score_text_border, (settings.GRID_SIZE / 2 - 2, settings.GRID_SIZE / 2 + 2)
-    )
-    screen.blit(
-        score_text_border, (settings.GRID_SIZE / 2 + 2, settings.GRID_SIZE / 2 + 2)
-    )
-    screen.blit(score_text, (settings.GRID_SIZE / 2, settings.GRID_SIZE / 2))
-
-    if player_name and not auto_move:
-        screen.blit(
-            name_text_border, (settings.GRID_SIZE * 8, settings.GRID_SIZE / 2 - 2)
-        )
-        screen.blit(
-            name_text_border, (settings.GRID_SIZE * 8 + 2, settings.GRID_SIZE / 2 - 2)
-        )
-        screen.blit(
-            name_text_border, (settings.GRID_SIZE * 8 - 2, settings.GRID_SIZE / 2 + 2)
-        )
-        screen.blit(
-            name_text_border, (settings.GRID_SIZE * 8 + 2, settings.GRID_SIZE / 2 + 2)
-        )
-        screen.blit(name_text, (settings.GRID_SIZE * 8, settings.GRID_SIZE / 2))
-
 
 def game_state_leaderboard(leaderboard):
     font = pygame.font.Font(None, 36)
-
-    draw_text_with_border("LEADERBOARD", 250)
-    draw_text_with_border("Press L or click to go back", -250)
-    back_text = font.render(
-        "Press L or click to go back", True, settings.PURPLE
-    )
 
     sorted_entries = sorted(
         leaderboard.entries, key=lambda entry: entry.score, reverse=True
@@ -244,15 +179,4 @@ def game_state_leaderboard(leaderboard):
         screen.blit(entry_text_border, entry_rect.move(0, 2))
         screen.blit(entry_surface, entry_rect)
 
-    return back_text
-
-
-def game_state_settings():
-    font = pygame.font.Font(None, 36)
-    draw_text_with_border("SETTINGS", 250)
-    draw_text_with_border("Press S or click to go back", -250)
-    back_text = font.render(
-        "Press S or click to go back", True, settings.PURPLE
-    )
-
-    return back_text
+    return

@@ -29,8 +29,18 @@ start_button = None
 leaderboard_button = None
 settings_button = None
 exit_button = None
-checkbox = None
-back_text = None
+auto_move_text_rect = None
+auto_move_rect = None
+auto_move_checked = False
+leaderboard_back_text = None
+settings_back_text = None
+enter_name = None
+name_imout_back_text = None
+full_screen_rect = None
+full_screen_text_rect = None
+full_screen_checked = False
+size = (settings.WIDTH, settings.HEIGHT)
+
 
 while True:
     for event in pygame.event.get():
@@ -39,7 +49,7 @@ while True:
             sys.exit()
 
         if event.type == pygame.VIDEORESIZE:
-            graphics.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
+            size = event.dict['size']
             graphics.menu_background = pygame.transform.scale(graphics.menu_background, (event.w, event.h))
             graphics.game_background = pygame.transform.scale(graphics.game_background, (event.w, event.h))
             settings.GRID_WIDTH = event.w // settings.GRID_SIZE
@@ -53,49 +63,20 @@ while True:
         if game_state == settings.MENU:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 pos = pygame.mouse.get_pos()
-                start_button_rect = start_button.get_rect(
-                    topleft=(
-                        settings.WIDTH // 2 - start_button.get_width() // 2,
-                        settings.HEIGHT // 2 - 50,
-                    )
-                )
-                leaderboard_button_rect = leaderboard_button.get_rect(
-                    topleft=(
-                        settings.WIDTH // 2 - leaderboard_button.get_width() // 2,
-                        settings.HEIGHT // 2,
-                    )
-                )
-                settings_button_rect = settings_button.get_rect(
-                    topleft=(
-                        settings.WIDTH // 2 - settings_button.get_width() // 2,
-                        settings.HEIGHT // 2 + 50,
-                    )
-                )
-                exit_button_rect = exit_button.get_rect(
-                    topleft=(
-                        settings.WIDTH // 2 - exit_button.get_width() // 2,
-                        settings.HEIGHT - 50,
-                    )
-                )
-                checkbox_rect = checkbox.get_rect(
-                    topright=(
-                        settings.WIDTH - settings.GRID_SIZE - 10,
-                        settings.GRID_SIZE + 10,
-                    )
-                )
-                if start_button_rect.collidepoint(pos):
+                if start_button.collidepoint(pos):
                     if not serpent1.auto_move:
                         game_state = settings.NAME_INPUT
                     else:
                         game_state = settings.GAME
-                if exit_button_rect.collidepoint(pos):
+                if exit_button.collidepoint(pos):
                     pygame.quit()
                     sys.exit()
-                if leaderboard_button_rect.collidepoint(pos):
+                if leaderboard_button.collidepoint(pos):
                     game_state = settings.LEADERBOARD
-                if settings_button_rect.collidepoint(pos):
+                if settings_button.collidepoint(pos):
                     game_state = settings.SETTINGS
-                if checkbox_rect.collidepoint(pos):
+                if auto_move_text_rect.collidepoint(pos) or auto_move_rect.collidepoint(pos):
+                    auto_move_checked = not auto_move_checked
                     serpent1.auto_move = not serpent1.auto_move
 
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -125,14 +106,7 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_l:
                 game_state = settings.MENU
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                pos = pygame.mouse.get_pos()
-                back_text_rect = back_text.get_rect(
-                    topleft=(
-                        settings.WIDTH // 2 - back_text.get_width() // 2,
-                        settings.HEIGHT - 50,
-                    )
-                )
-                if back_text_rect.collidepoint(pos):
+                if leaderboard_back_text.collidepoint(pygame.mouse.get_pos()):
                     game_state = settings.MENU
 
         elif game_state == settings.NAME_INPUT:
@@ -148,33 +122,36 @@ while True:
                         last_player_name = ""
                         serpent1.player_name = ""
                     serpent1.player_name += event.unicode
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if name_imout_back_text.collidepoint(pygame.mouse.get_pos()):
+                    game_state = settings.MENU
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                pos = pygame.mouse.get_pos()
-                input_text, input_text_position = graphics.game_state_name_input(
-                    serpent1.player_name
-                )
-                click_rect = pygame.Rect(
-                    input_text_position[0],
-                    input_text_position[1],
-                    input_text.get_width(),
-                    input_text.get_height(),
-                )
-                if click_rect.collidepoint(pos):
+                if enter_name.collidepoint(pygame.mouse.get_pos()):
                     game_state = settings.GAME
 
         elif game_state == settings.SETTINGS:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_s:
                 game_state = settings.MENU
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                pos = pygame.mouse.get_pos()
-                back_text_rect = back_text.get_rect(
-                    topleft=(
-                        settings.WIDTH // 2 - back_text.get_width() // 2,
-                        settings.HEIGHT - 50,
-                    )
-                )
-                if back_text_rect.collidepoint(pos):
+                if settings_back_text.collidepoint(pygame.mouse.get_pos()):
                     game_state = settings.MENU
+                elif full_screen_rect.collidepoint(pygame.mouse.get_pos()) or full_screen_text_rect.collidepoint(pygame.mouse.get_pos()):
+                    full_screen_checked = not full_screen_checked
+                    if not full_screen_checked:
+                        screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+                    else:
+                        modes = pygame.display.list_modes()
+                        if modes:
+                            max_mode = modes[0]
+                            settings.WIDTH = max_mode[0]
+                            settings.HEIGHT = max_mode[1]
+                            screen = pygame.display.set_mode((settings.WIDTH, settings.HEIGHT), pygame.FULLSCREEN)
+                            graphics.menu_background = pygame.transform.scale(graphics.menu_background, (max_mode[0], max_mode[1]))
+                            graphics.game_background = pygame.transform.scale(graphics.game_background, (max_mode[0], max_mode[1]))
+                        else:
+                            screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+
+
 
     if game_state == settings.GAME:
         if serpent1.auto_move:
@@ -217,33 +194,35 @@ while True:
     screen.blit(graphics.menu_background, (0, 0))
 
     if game_state == settings.MENU:
-        (
-            start_button,
-            leaderboard_button,
-            settings_button,
-            exit_button,
-            checkbox,
-            checkbox_rect,
-        ) = graphics.game_state_menu(serpent1.auto_move)
+        graphics.draw_text_with_border("Fruity Serpent", 250, font=70, highlight_on_mouse=False)
+        auto_move_rect, auto_move_text_rect = graphics.draw_checkbox_with_text("Auto move", (settings.WIDTH - (settings.GRID_SIZE * 5), settings.GRID_SIZE), auto_move_checked, highlight_on_mouse=True)
+        start_button = graphics.draw_text_with_border("Press SPACE or click to start", 50)
+        leaderboard_button = graphics.draw_text_with_border("Press L or click for Leaderboard")
+        settings_button = graphics.draw_text_with_border("Press S or click for Settings", -50)
+        exit_button = graphics.draw_text_with_border("Press ESC or click to EXIT", -250)
     elif game_state == settings.NAME_INPUT:
+        graphics.draw_text_with_border(serpent1.player_name, highlight_on_mouse=False)
+        enter_name = graphics.draw_text_with_border("Enter your name and press SPACE or click to start:", 50)
         if last_player_name != "":
             serpent1.player_name = last_player_name
-        graphics.game_state_name_input(serpent1.player_name)
+        name_imout_back_text = graphics.draw_text_with_border("Click to go back", -250)
     elif game_state == settings.GAME:
         screen.blit(graphics.game_background, (0, 0))
         serpent1.draw(screen)
         food.draw(screen)
         superfood.draw(screen)
-        graphics.game_state_game(
-            serpent1.player_name, serpent1.score, serpent1.auto_move
-        )
+        graphics.game_state_game()
+        graphics.draw_text_with_border(f"Score: {serpent1.score}", text_position=(settings.GRID_SIZE / 2, settings.GRID_SIZE / 2), highlight_on_mouse=False)
+        graphics.draw_text_with_border(serpent1.player_name, text_position=(settings.GRID_SIZE * 6, settings.GRID_SIZE / 2), highlight_on_mouse=False)
     elif game_state == settings.LEADERBOARD:
         leaderboard_game = leaderboard.Leaderboard.load_leaderboard()
-        back_text = graphics.game_state_leaderboard(leaderboard_game)
+        graphics.draw_text_with_border("LEADERBOARD", 250, font=70, highlight_on_mouse=False)
+        leaderboard_back_text = graphics.draw_text_with_border("Press L or click to go back", -250)
         graphics.game_state_leaderboard(leaderboard_game)
     elif game_state == settings.SETTINGS:
-        back_text = graphics.game_state_settings()
-        graphics.game_state_settings()
+        graphics.draw_text_with_border("SETTINGS", 250, font=70, highlight_on_mouse=False)
+        full_screen_rect, full_screen_text_rect = graphics.draw_checkbox_with_text("Fullscreen", checked=full_screen_checked, highlight_on_mouse=True)
+        settings_back_text = graphics.draw_text_with_border("Press S or click to go back", -250)
 
     pygame.display.flip()
     clock.tick(15)
