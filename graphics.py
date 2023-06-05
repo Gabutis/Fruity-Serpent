@@ -12,13 +12,18 @@ def get_image(sheet, frame_w, frame_h, width, height, scale, color):
     return image
 
 
-def draw_text_with_border(text, offset=0, text_position=None, font=36, highlight_on_mouse=True):
+def draw_text_with_border(
+    text, offset=0, text_position=None, font=36, highlight_on_mouse=True
+):
     text_font = pygame.font.Font(None, font)
     text_inner = text_font.render(text, True, settings.PURPLE)
     text_outer = text_font.render(text, True, settings.GREEN)
 
     if text_position is None:
-        text_position = (settings.WIDTH // 2 - text_inner.get_width() // 2, settings.HEIGHT // 2 - offset)
+        text_position = (
+            settings.WIDTH // 2 - text_inner.get_width() // 2,
+            settings.HEIGHT // 2 - offset,
+        )
 
     outer_rect = text_outer.get_rect(topleft=text_position)
 
@@ -38,7 +43,9 @@ def draw_text_with_border(text, offset=0, text_position=None, font=36, highlight
     return outer_rect
 
 
-def draw_checkbox_with_text(text, text_position=None, checked=False, font=36, highlight_on_mouse=False):
+def draw_checkbox_with_text(
+    text, offset=0, text_position=None, checked=False, font=36, highlight_on_mouse=False
+):
     checkbox_size = 20
     checkbox_padding = 5
     text_font = pygame.font.Font(None, font)
@@ -48,10 +55,18 @@ def draw_checkbox_with_text(text, text_position=None, checked=False, font=36, hi
 
     if text_position is None:
         text_position = (
-        settings.WIDTH // 2 - (checkbox_size + checkbox_padding + text_rect.width) // 2, settings.HEIGHT // 2)
+            settings.WIDTH // 2
+            - (checkbox_size + checkbox_padding + text_rect.width) // 2,
+            settings.HEIGHT // 2 - offset,
+        )
 
-    checkbox_rect = pygame.Rect(text_position[0], text_position[1], checkbox_size, checkbox_size)
-    text_rect.topleft = (text_position[0] + checkbox_size + checkbox_padding, text_position[1])
+    checkbox_rect = pygame.Rect(
+        text_position[0], text_position[1], checkbox_size, checkbox_size
+    )
+    text_rect.topleft = (
+        text_position[0] + checkbox_size + checkbox_padding,
+        text_position[1],
+    )
 
     if checked:
         pygame.draw.rect(screen, settings.GREEN, checkbox_rect)
@@ -60,7 +75,9 @@ def draw_checkbox_with_text(text, text_position=None, checked=False, font=36, hi
         pygame.draw.rect(screen, settings.PURPLE, checkbox_rect, 2)
 
     if highlight_on_mouse and (
-            checkbox_rect.collidepoint(pygame.mouse.get_pos()) or text_rect.collidepoint(pygame.mouse.get_pos())):
+        checkbox_rect.collidepoint(pygame.mouse.get_pos())
+        or text_rect.collidepoint(pygame.mouse.get_pos())
+    ):
         screen.blit(text_outer, (text_rect.left - 2, text_rect.top))
         screen.blit(text_outer, (text_rect.left + 2, text_rect.top))
         screen.blit(text_outer, (text_rect.left, text_rect.top - 2))
@@ -83,10 +100,14 @@ icon_image = pygame.image.load("pictures/icon_for_game.png")
 pygame.display.set_icon(icon_image)
 
 menu_background = pygame.image.load("pictures/menu_background.jpg")
-menu_background = pygame.transform.scale(menu_background, (settings.WIDTH, settings.HEIGHT))
+menu_background = pygame.transform.scale(
+    menu_background, (settings.WIDTH, settings.HEIGHT)
+)
 
 game_background = pygame.image.load("pictures/game_background.jpg")
-game_background = pygame.transform.scale(game_background, (settings.WIDTH, settings.HEIGHT))
+game_background = pygame.transform.scale(
+    game_background, (settings.WIDTH, settings.HEIGHT)
+)
 
 snake_sprite = pygame.image.load("pictures/snake_sprite.png")
 
@@ -158,9 +179,7 @@ def game_state_game():
 def game_state_leaderboard(leaderboard):
     font = pygame.font.Font(None, 36)
 
-    sorted_entries = sorted(
-        leaderboard.entries, key=lambda entry: entry.score, reverse=True
-    )
+    sorted_entries = sorted(leaderboard.entries, key=lambda entry: entry.score)
 
     for i, entry in enumerate(sorted_entries):
         player_name = entry.player_name
@@ -171,12 +190,10 @@ def game_state_leaderboard(leaderboard):
         entry_surface = font.render(entry_text, True, settings.PURPLE)
 
         entry_rect = entry_text_border.get_rect(
-            midtop=(settings.WIDTH // 2, 100 + i * 30)
+            midtop=(settings.WIDTH // 2, settings.HEIGHT // 2 - (i * 40))
         )
         screen.blit(entry_text_border, entry_rect.move(-2, 0))
         screen.blit(entry_text_border, entry_rect.move(2, 0))
         screen.blit(entry_text_border, entry_rect.move(0, -2))
         screen.blit(entry_text_border, entry_rect.move(0, 2))
         screen.blit(entry_surface, entry_rect)
-
-    return
